@@ -2,10 +2,45 @@ import "./SignIn.scss"
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useForm } from "react-hook-form"
+import { useNavigate } from "react-router-dom"
+import { login, getData } from "../api/login"
+import { useDispatch } from 'react-redux'
+import { userStore } from "../redux/userStore"
+import { saveState } from "../redux/storage"
 
 export default function SignIn() {
-  const { register, handleSubmit } = useForm()
-  const onSubmit = data => console.log(data)
+  const { register, handleSubmit } = useForm(),
+        dispatch = useDispatch(),
+        navigate = useNavigate()
+
+  const onSubmit = async data => {
+    const storageName = data["remember-me"] ? "localStorage" : "sessionStorage",
+          storageType = data["remember-me"] ? localStorage : sessionStorage
+    const saveCurrentState = () => saveState(userStore.getState(), storageType)
+
+    try {
+      const loginData = await login(data.username, data.password)
+
+      if (loginData.status === 200) {
+        const userData  = await getData(loginData.body.token)
+              
+        dispatch({type: "LOGIN_VALID", userData: userData.body, token: loginData.body.token})
+        dispatch({type: "SAVE_STORAGE", storage: storageName})
+        saveCurrentState()
+        navigate("/profile")
+      } else {
+        dispatch({type: "LOGIN_ERROR"})
+        saveCurrentState()
+        // Show error under submit button
+        console.log(loginData.message)
+      }      
+    } catch (error) {
+      dispatch({type: "LOGIN_ERROR"})
+      saveCurrentState()
+      // Show error under submit button
+      console.log("Error with server")
+    }
+  }
 
   return (
     <main className="main bg-dark">

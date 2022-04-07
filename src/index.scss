@@ -37,3 +37,19 @@ body {
   width: 1px !important;
   white-space: nowrap !important; /* 3 */
 }
+
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  margin-bottom: 1rem;
+
+  label {
+    font-weight: bold;
+  }
+
+  input {
+    padding: 5px;
+    font-size: 1.2rem;
+  }
+}

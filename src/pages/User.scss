@@ -60,6 +60,26 @@
   color: #fff;
 }
 
+.flex{
+  display: flex;
+  gap: 10px;
+
+  &-center{
+    @extend .flex;
+    justify-content: center;
+  }
+
+  &-left{
+    @extend .flex;
+    align-items: flex-start;
+  }
+
+  &-right{
+    @extend .flex;
+    align-items: flex-end;
+  }
+}
+
 @media (min-width: 720px) {
   .account {
     flex-direction: row;

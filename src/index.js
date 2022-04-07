@@ -19,7 +19,7 @@ root.render(
           <Route index element={<Home />} />
           <Route path="/login" element={<SignIn />} />
           <Route path="/profile" element={<User />} />
-          <Route path="*" element={<>404</>} />
+          <Route path="*" element={<>Error 404: this page does not exist</>} />
         </Route>
       </Routes>
     </BrowserRouter>
