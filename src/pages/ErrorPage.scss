@@ -1,0 +1,12 @@
+.errorPage{
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-size: 2rem;
+
+  h1, h2{
+    margin: 1rem;
+  }
+}

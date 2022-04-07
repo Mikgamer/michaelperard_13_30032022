@@ -7,6 +7,7 @@ import App from "./App"
 import Home from "./pages/Home"
 import SignIn from "./pages/SignIn"
 import User from "./pages/User"
+import ErrorPage from "./pages/ErrorPage"
 
 const container = document.getElementById("root"),
       root      = ReactDOM.createRoot(container)
@@ -19,7 +20,7 @@ root.render(
           <Route index element={<Home />} />
           <Route path="/login" element={<SignIn />} />
           <Route path="/profile" element={<User />} />
-          <Route path="*" element={<>Error 404: this page does not exist</>} />
+          <Route path="*" element={<ErrorPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

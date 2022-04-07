@@ -4,6 +4,7 @@ import { editProfile } from "../api/login"
 import { useSelector, useDispatch } from 'react-redux'
 import { userStore } from "../redux/userStore"
 import { saveState } from "../redux/storage"
+import ErrorPage from "./ErrorPage"
 
 const HeaderMessage = (props) => {
   const dispatch = useDispatch()
@@ -55,7 +56,7 @@ const EditingHeader = (props) => {
 export default function User() {
   const { logged: isUserConnected = false, userData, token, isEditingProfile, storage } = useSelector((state) => state)
 
-  if (!isUserConnected) return <>You must be logged in to access this page</>
+  if (!isUserConnected) return <ErrorPage error={401}/>
 
   return (
     <main className="main bg-dark">
