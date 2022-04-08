@@ -1,23 +1,23 @@
 import "./Header.scss"
 import Logo from "../img/argentBankLogo.png"
-import { faCircleUser, faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { ReactComponent as UserCircle } from "../img/user-circle.svg"
+import { ReactComponent as SignOut } from "../img/sign-out.svg"
 import { Link } from "react-router-dom"
 import { useSelector, useDispatch } from 'react-redux'
 
 const NotConnected = () => (
   <Link to="/login" className="main-nav-item" >
-    <FontAwesomeIcon icon={faCircleUser} /> Sign In
+    <UserCircle className="icon" /> Sign In
   </Link>
 )
 
 const Connected = (props) => (
   <>
     <Link  to="/profile"className="main-nav-item">
-      <FontAwesomeIcon icon={faCircleUser} /> {props.userName}
+      <UserCircle className="icon" /> {" "+props.userName}
     </Link>
     <Link to="/" className="main-nav-item" onClick={props.logout}>
-      <FontAwesomeIcon icon={faArrowRightFromBracket} /> Sign Out
+      <SignOut className="icon" /> Sign Out
     </Link>
   </>
 )

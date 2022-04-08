@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { userStore } from "../redux/userStore"
 import { saveState } from "../redux/storage"
 import ErrorPage from "./ErrorPage"
+import { useState } from "react"
 
 const HeaderMessage = (props) => {
   const dispatch = useDispatch()
@@ -18,9 +19,10 @@ const HeaderMessage = (props) => {
 }
 
 const EditingHeader = (props) => {
-  const { register, handleSubmit } = useForm()
-  const dispatch = useDispatch()
-  const saveCurrentState = () => saveState(userStore.getState(), props.storage)
+  const { register, handleSubmit } = useForm(),
+        dispatch = useDispatch(),
+        saveCurrentState = () => saveState(userStore.getState(), props.storage),
+        [errorMessage, setErrorMessage] = useState("")
   
   const onSubmit = async data => {
     try {
@@ -28,12 +30,14 @@ const EditingHeader = (props) => {
       if (edit.status === 200) {
         dispatch({type: "PROFILE_UPDATE", firstName: data.firstName, lastName: data.lastName})
         dispatch({type: "PROFILE_CLOSE_EDIT"})
+        setErrorMessage("")
         saveCurrentState()
       } else {
-        // Show error under submit button
-        console.log(edit.message)
+        setErrorMessage(edit.message)
       }
-    } catch (error) {}
+    } catch (error) {
+      setErrorMessage("Error with server")
+    }
   }
 
   return (
@@ -41,14 +45,15 @@ const EditingHeader = (props) => {
       <h1>Welcome back</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="flex-center">
         <div className="input-wrapper flex-right">
-          <input type="text" {...register("firstName", { required: true })}/>
+          <input type="text" placeholder={props.userData.firstName} {...register("firstName", { required: true })}/>
           <button className="edit-button" type="submit">Save</button>
         </div>
         <div className="input-wrapper flex-left">
-          <input type="text" {...register("lastName", { required: true })}/>
+          <input type="text" placeholder={props.userData.lastName} {...register("lastName", { required: true })}/>
           <button className="edit-button" type="button" onClick={() => dispatch({type: "PROFILE_CLOSE_EDIT"})}>Cancel</button>
         </div>
       </form>
+      <div className="errorMessage">{errorMessage}</div>
     </>
   )
 }
@@ -62,7 +67,7 @@ export default function User() {
     <main className="main bg-dark">
       <div className="header">
         {isEditingProfile ? 
-          <EditingHeader storage={storage} token={token}/> :
+          <EditingHeader storage={storage} token={token} userData={userData} /> :
           <HeaderMessage username={userData.firstName+" "+userData.lastName} />
         }
       </div>

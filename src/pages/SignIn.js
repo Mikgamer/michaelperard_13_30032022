@@ -1,17 +1,18 @@
 import "./SignIn.scss"
-import { faCircleUser } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { ReactComponent as UserCircle } from "../img/user-circle.svg"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
 import { login, getData } from "../api/login"
 import { useDispatch } from 'react-redux'
 import { userStore } from "../redux/userStore"
 import { saveState } from "../redux/storage"
+import { useState } from "react"
 
 export default function SignIn() {
   const { register, handleSubmit } = useForm(),
         dispatch = useDispatch(),
-        navigate = useNavigate()
+        navigate = useNavigate(),
+        [errorMessage, setErrorMessage] = useState("")
 
   const onSubmit = async data => {
     const storageName = data["remember-me"] ? "localStorage" : "sessionStorage",
@@ -31,21 +32,19 @@ export default function SignIn() {
       } else {
         dispatch({type: "LOGIN_ERROR"})
         saveCurrentState()
-        // Show error under submit button
-        console.log(loginData.message)
+        setErrorMessage(loginData.message)
       }      
     } catch (error) {
       dispatch({type: "LOGIN_ERROR"})
       saveCurrentState()
-      // Show error under submit button
-      console.log("Error with server")
+      setErrorMessage("Error with server")
     }
   }
 
   return (
     <main className="main bg-dark">
       <section className="sign-in-content">
-        <FontAwesomeIcon icon={faCircleUser} className="sign-in-icon" />
+        <UserCircle className="sign-in-icon" />
         <h1>Sign In</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="input-wrapper">
@@ -61,6 +60,7 @@ export default function SignIn() {
             <label htmlFor="remember-me">Remember me</label>
           </div>
           <button type="submit" className="sign-in-button">Sign In</button>
+          <div className="errorMessage">{errorMessage}</div>
         </form>
       </section>
     </main>
