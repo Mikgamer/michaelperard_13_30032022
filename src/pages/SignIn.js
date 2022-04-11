@@ -30,13 +30,9 @@ export default function SignIn() {
         saveCurrentState()
         navigate("/profile")
       } else {
-        dispatch({type: "LOGIN_ERROR"})
-        saveCurrentState()
         setErrorMessage(loginData.message)
       }      
     } catch (error) {
-      dispatch({type: "LOGIN_ERROR"})
-      saveCurrentState()
       setErrorMessage("Error with server")
     }
   }

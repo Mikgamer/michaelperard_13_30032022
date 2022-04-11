@@ -8,12 +8,10 @@ import ErrorPage from "./ErrorPage"
 import { useState } from "react"
 
 const HeaderMessage = (props) => {
-  const dispatch = useDispatch()
-
   return (
     <>
       <h1>Welcome back<br/>{props.username}</h1>
-      <button className="edit-button" onClick={() => dispatch({type: "PROFILE_EDIT"})}>Edit Name</button>
+      <button className="edit-button" onClick={ () => props.openEdit() }>Edit Name</button>
     </>
   )
 }
@@ -29,7 +27,7 @@ const EditingHeader = (props) => {
       const edit = await editProfile(data.firstName, data.lastName, props.token)
       if (edit.status === 200) {
         dispatch({type: "PROFILE_UPDATE", firstName: data.firstName, lastName: data.lastName})
-        dispatch({type: "PROFILE_CLOSE_EDIT"})
+        props.closeEdit()
         setErrorMessage("")
         saveCurrentState()
       } else {
@@ -50,7 +48,7 @@ const EditingHeader = (props) => {
         </div>
         <div className="input-wrapper flex-left">
           <input type="text" placeholder={props.userData.lastName} {...register("lastName", { required: true })}/>
-          <button className="edit-button" type="button" onClick={() => dispatch({type: "PROFILE_CLOSE_EDIT"})}>Cancel</button>
+          <button className="edit-button" type="button" onClick={ () => props.closeEdit() }>Cancel</button>
         </div>
       </form>
       <div className="errorMessage">{errorMessage}</div>
@@ -59,7 +57,11 @@ const EditingHeader = (props) => {
 }
 
 export default function User() {
-  const { logged: isUserConnected = false, userData, token, isEditingProfile, storage } = useSelector((state) => state)
+  const { logged: isUserConnected = false, userData, token, storage } = useSelector((state) => state),
+        [isEditingProfile, setIsEditingProfile] = useState(false)
+
+  const openEdit  = () => { setIsEditingProfile(true)  },
+        closeEdit = () => { setIsEditingProfile(false) }
 
   if (!isUserConnected) return <ErrorPage error={401}/>
 
@@ -67,8 +69,8 @@ export default function User() {
     <main className="main bg-dark">
       <div className="header">
         {isEditingProfile ? 
-          <EditingHeader storage={storage} token={token} userData={userData} /> :
-          <HeaderMessage username={userData.firstName+" "+userData.lastName} />
+          <EditingHeader storage={storage} token={token} userData={userData} closeEdit={closeEdit} /> :
+          <HeaderMessage username={userData.firstName+" "+userData.lastName} openEdit={openEdit} />
         }
       </div>
       <h2 className="sr-only">Accounts</h2>
